@@ -10,6 +10,7 @@ public class EnemyStateManager : MonoBehaviour
     private EnemyStateFactory stateFactory;
     private EnemyBaseState currentState;
     private bool isTransitioning;
+    public bool IsHurt;
 
     #region Context and Access
 
