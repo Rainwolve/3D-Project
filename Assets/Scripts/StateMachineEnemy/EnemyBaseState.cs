@@ -1,6 +1,9 @@
 using UnityEngine;
+using UnityEngine.AI;
+
 
 public abstract class EnemyBaseState{
+    
     protected EnemyStateManager stateManager;
     protected EnemyStateFactory  stateFactory;
 
@@ -9,13 +12,8 @@ public abstract class EnemyBaseState{
         stateManager = enemyStateManager;
         stateFactory = enemyStateFactory;
     }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     public abstract void EnterState();
     public abstract void UpdateState();
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
 }
