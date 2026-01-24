@@ -48,7 +48,7 @@ public class PatrolStateEnemy : EnemyBaseState
     private void UpdateAnimationSpeed()
     {
         stateManager.Animator.SetFloat(stateManager.SpeedAnimationHash,
-            stateManager.NavMeshAgent.velocity.magnitude / stateManager.NavMeshAgent.speed);
+            stateManager.NavMeshAgent.velocity.magnitude);
     }
 
     private void UpdateWaypoints()

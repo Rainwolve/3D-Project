@@ -13,7 +13,7 @@ public class HuntStateEnemy : EnemyBaseState
         stateManager.NavMeshAgent.isStopped = false;
         stateManager.NavMeshAgent.speed = 4;
         stateManager.Animator.SetFloat(stateManager.SpeedAnimationHash,
-            stateManager.NavMeshAgent.velocity.magnitude / stateManager.NavMeshAgent.speed);
+            stateManager.NavMeshAgent.velocity.magnitude);
     }
 
     public override void UpdateState()
