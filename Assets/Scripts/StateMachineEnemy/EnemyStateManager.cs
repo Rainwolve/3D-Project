@@ -17,11 +17,17 @@ public class EnemyStateManager : MonoBehaviour
     // context
     [SerializeField] private Transform enemyPatrolDestinationParent;
     [SerializeField] private Transform playerTransform;
+    [SerializeField] private EnemyAttackArea attackArea;
+    [SerializeField] private int attackDamage;
     [SerializeField] private float huntingDistance;
     [SerializeField] private float attackDistance;
 
     private Animator animator;
     private int speedAnimationHash = Animator.StringToHash("Speed");
+    private int attackAnimationHash = Animator.StringToHash("Attack");
+    private int coolDownAnimationHash = Animator.StringToHash("CoolDown");
+    private bool checkToDealDamage = false;
+    private bool isAnimationFinished;
 
     private NavMeshAgent navMeshAgent;
     private List<Vector3> patrolDestinations;
@@ -33,9 +39,41 @@ public class EnemyStateManager : MonoBehaviour
         get { return animator; }
     }
 
+    public EnemyAttackArea AttackArea
+    {
+        get { return attackArea; }
+    }
+
     public int SpeedAnimationHash
     {
         get { return speedAnimationHash; }
+    }
+
+    public int AttackAnimationHash
+    {
+        get { return attackAnimationHash; }
+    }
+
+    public bool IsAnimationFinished
+    {
+        get { return isAnimationFinished; }
+        set { isAnimationFinished = value; }
+    }
+
+    public bool CheckToDealDamage
+    {
+        get { return checkToDealDamage; }
+        set { checkToDealDamage = value; }
+    }
+
+    public int CoolDownAnimationHash
+    {
+        get { return coolDownAnimationHash; }
+    }
+
+    public int AttackDamage
+    {
+        get { return attackDamage; }
     }
 
     public NavMeshAgent NavMeshAgent
@@ -111,5 +149,15 @@ public class EnemyStateManager : MonoBehaviour
         {
             patrolDestinations.Add(child.position);
         }
+    }
+
+    public void OnAnmationFinished()
+    {
+        checkToDealDamage = true;
+    }
+
+    public void DealAttackDamage()
+    {
+        isAnimationFinished = true;
     }
 }
