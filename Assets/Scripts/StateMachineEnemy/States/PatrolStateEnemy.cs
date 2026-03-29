@@ -13,7 +13,7 @@ public class PatrolStateEnemy : EnemyBaseState
 
     public override void EnterState()
     {
-        Debug.Log("Patrol state");
+        //Debug.Log("Patrol state");
         breakTimer = Random.Range(20f, 30f);
         stateManager.NavMeshAgent.isStopped = false;
         stateManager.NavMeshAgent.SetDestination(stateManager.PatrolDestinations[stateManager.DestinationIndex]);

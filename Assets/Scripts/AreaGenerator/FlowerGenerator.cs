@@ -7,13 +7,12 @@ public class FlowerGenerator : MonoBehaviour
     [SerializeField] private GameObject[] prefabs;
 
     [SerializeField] private Vector3 startPosition;
-    [SerializeField] private float spaceBetween = 1f;
-    [SerializeField] private float spaceBetweenRandom = 0.1f;
+    //[SerializeField] private float spaceBetween = 1f;
+    //[SerializeField] private float spaceBetweenRandom = 0.1f;
     [SerializeField] private int flowerdensity;
 
     private Vector3[] directions;
     Vector3 currentPosition;
-    private float plusminus = 1;
 
 
     void Start()

@@ -8,7 +8,7 @@ public class EdgeGenerator : MonoBehaviour
     
     [SerializeField] private Vector3 startPosition;
     [SerializeField] private float spaceBetween = 1f;
-    [SerializeField] private bool generateBorder = true;
+    //[SerializeField] private bool generateBorder = true;
 
     private Vector3[] directions;
     Vector3 currentPosition;
