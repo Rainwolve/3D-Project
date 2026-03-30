@@ -7,6 +7,7 @@ public class AttackManager : MonoBehaviour
 
     public List<IHurtable> Hurtables { get { return hurtables; } }
 
+    
     private void OnTriggerEnter(Collider other)
     {
         if (other.TryGetComponent<IHurtable>(out var hurtable))

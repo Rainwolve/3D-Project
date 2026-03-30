@@ -5,12 +5,14 @@ using UnityEngine.InputSystem;
 public class PlayerStateManager : MonoBehaviour
 {
     #region Variables/References
-
+    //References
+    [SerializeField] private AttackManager attackManager;
     //StateManager Itself
     PlayerStateFactory stateFactory;
     private PlayerBaseState currentState;
     private bool isTransitioning;
     [SerializeField] bool sendStateChangeDebug;
+    
 
 
     //Animator
@@ -33,6 +35,7 @@ public class PlayerStateManager : MonoBehaviour
     private bool isMovementPressed;
     private bool isRunPressed;
     private bool isDancePressed;
+    private bool isAttackFinished;
 
 
     private float rotationFactorPerFrame = 15;
@@ -112,6 +115,12 @@ public class PlayerStateManager : MonoBehaviour
     {
         get { return currentState; }
         set { currentState = value; }
+    }
+
+    public bool IsAttackFinished
+    {
+        get => isAttackFinished;
+        set => isAttackFinished = value;
     }
 
     public Animator Animator
@@ -301,6 +310,11 @@ public class PlayerStateManager : MonoBehaviour
     {
         if (sendStateChangeDebug)
             Debug.Log(message);
+    }
+
+    public void OnAnimationStop()
+    {
+        
     }
   
 }
