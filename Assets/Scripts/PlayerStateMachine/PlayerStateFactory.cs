@@ -28,4 +28,13 @@ public class PlayerStateFactory
     {
         return new PlayerDanceState(stateManager, this);
     }
+
+    public PlayerBaseState CreateGroundedState()
+    {
+        return new PlayerGroundedState(stateManager, this);
+    }
+    public PlayerBaseState CreateJumpState()
+    {
+        return new PlayerJumpState(stateManager, this);
+    }
 }

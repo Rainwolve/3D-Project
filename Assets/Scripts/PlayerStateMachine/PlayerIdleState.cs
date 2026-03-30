@@ -22,6 +22,11 @@ public class PlayerIdleState : PlayerBaseState
         CheckSwitchStates();
     }
     
+    public override void ExitState()
+    {
+        
+    }
+    
     private void CheckSwitchStates()
     {
         if (stateManager.IsMovementPressed && stateManager.IsRunPressed)

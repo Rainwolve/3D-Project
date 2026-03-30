@@ -1,16 +1,54 @@
 using UnityEngine;
 
-public class PlayerGroundedState : MonoBehaviour
+public class PlayerGroundedState : PlayerBaseState
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public PlayerGroundedState(PlayerStateManager stateManager, PlayerStateFactory stateFactory) 
+        : base(stateManager, stateFactory)
     {
+        IsRootState = true;
+        InitializeSubState();
         
     }
-
-    // Update is called once per frame
-    void Update()
+    public override void EnterState()
     {
-        
+        stateManager.SendStateDebug("GroundedSuperState Entered");
+        stateManager.AppliedMovementY = stateManager.GroundGrav;
+        stateManager.CurrentMovementY = stateManager.GroundGrav;
+
+
+    }
+
+    public override void UpdateState()
+    {
+       CheckSwitchState();
+    }
+    
+    private void CheckSwitchState()
+    {
+        if (stateManager.IsJumpPressed && !stateManager.NeedNewJumpInput)
+        {
+            stateManager.SwitchState(stateFactory.CreateJumpState());
+        }
+       
+    }
+
+    public override void ExitState()
+    {
+    }
+
+    public void InitializeSubState()
+    {
+        if (stateManager.IsMovementPressed && stateManager.IsRunPressed)
+        {
+            SubState = stateFactory.CreateRunState();
+        }
+        else if (stateManager.IsMovementPressed&& !stateManager.IsRunPressed)
+        {
+            SubState = stateFactory.CreateWalkState();
+        }
+        else
+        {
+            SubState = stateFactory.CreateIdleState();
+        }
     }
 }

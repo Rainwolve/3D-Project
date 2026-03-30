@@ -21,6 +21,11 @@ public class PlayerRunState: PlayerBaseState
         stateManager.AppliedMovementZ = stateManager.CurrentMovementInput.y * stateManager.RunMultiplier;
     }
     
+    public override void ExitState()
+    {
+        
+    }
+    
     private void CheckSwitchState()
     {
         if (!stateManager.IsMovementPressed)

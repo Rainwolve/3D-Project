@@ -19,11 +19,13 @@ public class PlayerStateManager : MonoBehaviour
     private readonly int walkAnimationHash = Animator.StringToHash("IsWalking");
     private readonly int runAnimationHash = Animator.StringToHash("IsRunning");
     private readonly int danceAnimationHash = Animator.StringToHash("IsDancing");
+    private readonly int jumpAnimationHash = Animator.StringToHash("IsJumping");
+    private readonly int danceStartAnimationHash = Animator.StringToHash("StartDance");
 
     //Movement
     [SerializeField] private float movementSpeed = 2.0f;
 
-     CharacterController characterController;
+    CharacterController characterController;
     private InputSystem_Actions inputSystem;
 
     private Vector2 currentMovementInput;
@@ -32,10 +34,49 @@ public class PlayerStateManager : MonoBehaviour
     private bool isRunPressed;
     private bool isDancePressed;
 
+
     private float rotationFactorPerFrame = 15;
     private float runMultiplier = 4.0f;
 
+    //Jump
+    private bool isJumpPressed;
+    private bool isJumping;
+    private float currentMovementY;
+    private bool needNewJumpInput;
+    private float initialJumpVelocity;
+    [SerializeField] private float maxJumpTime;
+    [SerializeField] private float maxJumpHeight;
+    private float gravity;
+    private float groundGrav =0.05f;
+    private readonly float jumpMult= 4;
+
     #region Getters/Setters
+
+    public float JumpMult => jumpMult;
+
+    public float CurrentMovementY
+    {
+        get => currentMovementY;
+        set => currentMovementY = value;
+    }
+
+    public bool IsJumping
+    {
+        get => isJumping;
+        set => isJumping = value;
+    }
+
+    public bool NeedNewJumpInput
+    {
+        get => needNewJumpInput;
+        set => needNewJumpInput = value;
+    }
+
+    public float InitialJumpVelocity => initialJumpVelocity;
+    
+    public float Gravity => gravity;
+    
+    public float GroundGrav => groundGrav;
 
     public int WalkAnimationHash
     {
@@ -50,6 +91,16 @@ public class PlayerStateManager : MonoBehaviour
     public int DanceAnimationHash
     {
         get { return danceAnimationHash; }
+    }
+
+    public int DanceStartAnimationHash
+    {
+        get { return danceStartAnimationHash; }
+    }
+
+    public int JumpAnimationHash
+    {
+        get { return jumpAnimationHash; }
     }
 
     public CharacterController CharacterController
@@ -73,6 +124,11 @@ public class PlayerStateManager : MonoBehaviour
         get { return isMovementPressed; }
     }
 
+    public bool IsJumpPressed
+    {
+        get { return isJumpPressed; }
+    }
+
     public float RunMultiplier
     {
         get { return runMultiplier; }
@@ -87,6 +143,7 @@ public class PlayerStateManager : MonoBehaviour
     {
         get { return isDancePressed; }
     }
+
     public Vector2 CurrentMovementInput
     {
         get { return currentMovementInput; }
@@ -98,6 +155,12 @@ public class PlayerStateManager : MonoBehaviour
         set { appliedMovement.x = value; }
     }
 
+    public float AppliedMovementY
+    {
+        get { return appliedMovement.y; }
+        set { appliedMovement.y = value; }
+    }
+
     public float AppliedMovementZ
     {
         get { return appliedMovement.z; }
@@ -105,29 +168,67 @@ public class PlayerStateManager : MonoBehaviour
     }
 
     #endregion
+
     #endregion
 
     private void Awake()
     {
+        
         inputSystem = new InputSystem_Actions();
         characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
+
+
         stateFactory = new PlayerStateFactory(this);
-        currentState = stateFactory.CreateIdleState();
+        currentState = stateFactory.CreateGroundedState();
         currentState.EnterState();
+        CalcJumpVariables();
         
-    
     }
-    private void Start()
+    private void CalcJumpVariables()
     {
-        appliedMovement.y = -9.81f;
+        float timeToApex = 0.5f * maxJumpTime;
+        gravity = (-2 * maxJumpTime) / Mathf.Pow(timeToApex, 2);
+        initialJumpVelocity = (2 * maxJumpHeight) / timeToApex;
     }
+
+    #region Events
+
+    private void OnEnable()
+    {
+        inputSystem.Enable();
+
+        inputSystem.Player.Move.started += OnMovement;
+        inputSystem.Player.Move.canceled += OnMovement;
+        inputSystem.Player.Move.performed += OnMovement;
+        inputSystem.Player.Sprint.started += OnSprint;
+        inputSystem.Player.Sprint.canceled += OnSprint;
+        inputSystem.Player.Jump.started += OnJump;
+        inputSystem.Player.Jump.canceled += OnJump;
+        inputSystem.Player.Dance.started += OnDance;
+        inputSystem.Player.Dance.canceled += OnDance;
+    }
+
+    private void OnDisable()
+    {
+        inputSystem.Disable();
+
+        inputSystem.Player.Move.started -= OnMovement;
+        inputSystem.Player.Move.canceled -= OnMovement;
+        inputSystem.Player.Move.performed -= OnMovement;
+        inputSystem.Player.Sprint.started -= OnSprint;
+        inputSystem.Player.Sprint.canceled -= OnSprint;
+        inputSystem.Player.Jump.started -= OnJump;
+        inputSystem.Player.Jump.canceled -= OnJump;
+        inputSystem.Player.Dance.started -= OnDance;
+        inputSystem.Player.Dance.canceled -= OnDance;
+    }
+
 
     private void OnMovement(InputAction.CallbackContext context)
     {
         currentMovementInput = context.ReadValue<Vector2>();
         isMovementPressed = currentMovementInput.x != 0 || currentMovementInput.y != 0;
-        Debug.Log(isMovementPressed);
     }
 
     private void OnSprint(InputAction.CallbackContext context)
@@ -138,37 +239,20 @@ public class PlayerStateManager : MonoBehaviour
     private void OnDance(InputAction.CallbackContext context)
     {
         isDancePressed = context.ReadValueAsButton();
-        Debug.Log(isDancePressed);
     }
 
-   
-
-    private void OnEnable()
+    private void OnJump(InputAction.CallbackContext context)
     {
-        inputSystem.Enable();
-        
-        inputSystem.Player.Move.started += OnMovement;
-        inputSystem.Player.Move.canceled += OnMovement;
-        inputSystem.Player.Move.performed += OnMovement;
-        inputSystem.Player.Sprint.started += OnSprint;
-        inputSystem.Player.Sprint.canceled += OnSprint;
+        isJumpPressed = context.ReadValueAsButton();
+        needNewJumpInput = false;
     }
 
-    private void OnDisable()
-    {
-        inputSystem.Disable();
-        
-        inputSystem.Player.Move.started -= OnMovement;
-        inputSystem.Player.Move.canceled -= OnMovement;
-        inputSystem.Player.Move.performed -= OnMovement;
-        inputSystem.Player.Sprint.started -= OnSprint;
-        inputSystem.Player.Sprint.canceled -= OnSprint;
-    }
+    #endregion
 
     private void Update()
     {
         HandleRotation();
-        currentState.UpdateState();
+        currentState.UpdateStates();
         characterController.Move((Time.deltaTime * movementSpeed * appliedMovement));
     }
 
@@ -196,20 +280,27 @@ public class PlayerStateManager : MonoBehaviour
 
     public void SwitchState(PlayerBaseState newState)
     {
-        if (isTransitioning)
-        {
-            return;
-        }
+        if (isTransitioning) return;
 
         isTransitioning = true;
-        currentState = newState;
-        currentState.EnterState();
+        currentState?.ExitStates();
+        newState.EnterState();
+        if (newState.IsRootState)
+        {
+            currentState = newState;
+        }
+        else if (currentState != null)
+        {
+            currentState.SubState = newState;
+        }
+
         isTransitioning = false;
     }
 
     public void SendStateDebug(string message)
     {
-        if(sendStateChangeDebug)
+        if (sendStateChangeDebug)
             Debug.Log(message);
     }
+  
 }

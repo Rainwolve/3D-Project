@@ -21,6 +21,10 @@ public class PlayerWalkState: PlayerBaseState
         stateManager.AppliedMovementZ = stateManager.CurrentMovementInput.y;
     }
     
+    public override void ExitState()
+    {
+        
+    }
     private void CheckSwitchState()
     {
         if (!stateManager.IsMovementPressed)
