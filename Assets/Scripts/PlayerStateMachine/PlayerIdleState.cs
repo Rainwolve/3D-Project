@@ -41,5 +41,10 @@ public class PlayerIdleState : PlayerBaseState
         {
             stateManager.SwitchState(stateFactory.CreateDanceState());
         }
+
+        if (stateManager.IsAttacking)
+        {
+            stateManager.SwitchState(stateFactory.CreateAttackState());
+        }
     }
 }

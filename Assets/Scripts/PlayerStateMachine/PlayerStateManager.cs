@@ -5,14 +5,15 @@ using UnityEngine.InputSystem;
 public class PlayerStateManager : MonoBehaviour
 {
     #region Variables/References
+
     //References
     [SerializeField] private AttackManager attackManager;
+
     //StateManager Itself
     PlayerStateFactory stateFactory;
     private PlayerBaseState currentState;
     private bool isTransitioning;
     [SerializeField] bool sendStateChangeDebug;
-    
 
 
     //Animator
@@ -35,7 +36,11 @@ public class PlayerStateManager : MonoBehaviour
     private bool isMovementPressed;
     private bool isRunPressed;
     private bool isDancePressed;
-    private bool isAttackFinished;
+
+    //Attack
+    private bool isAttacking;
+    private bool isHitboxActive;
+    private bool isMovementStopped;
 
 
     private float rotationFactorPerFrame = 15;
@@ -50,10 +55,16 @@ public class PlayerStateManager : MonoBehaviour
     [SerializeField] private float maxJumpTime;
     [SerializeField] private float maxJumpHeight;
     private float gravity;
-    private float groundGrav =0.05f;
-    private readonly float jumpMult= 4;
+    private float groundGrav = 0.05f;
+    private readonly float jumpMult = 4;
 
     #region Getters/Setters
+
+    public bool IsHitboxActive
+    {
+        get => isHitboxActive;
+        set => isHitboxActive = value;
+    }
 
     public float JumpMult => jumpMult;
 
@@ -76,9 +87,9 @@ public class PlayerStateManager : MonoBehaviour
     }
 
     public float InitialJumpVelocity => initialJumpVelocity;
-    
+
     public float Gravity => gravity;
-    
+
     public float GroundGrav => groundGrav;
 
     public int WalkAnimationHash
@@ -117,10 +128,10 @@ public class PlayerStateManager : MonoBehaviour
         set { currentState = value; }
     }
 
-    public bool IsAttackFinished
+    public bool IsAttacking
     {
-        get => isAttackFinished;
-        set => isAttackFinished = value;
+        get => isAttacking;
+        set => isAttacking = value;
     }
 
     public Animator Animator
@@ -146,6 +157,12 @@ public class PlayerStateManager : MonoBehaviour
     public bool IsRunPressed
     {
         get { return isRunPressed; }
+    }
+
+    public bool IsMovementStopped
+    {
+        get => isMovementStopped;
+        set => isMovementStopped = value;
     }
 
     public bool IsDancePressed
@@ -182,7 +199,6 @@ public class PlayerStateManager : MonoBehaviour
 
     private void Awake()
     {
-        
         inputSystem = new InputSystem_Actions();
         characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
@@ -192,8 +208,8 @@ public class PlayerStateManager : MonoBehaviour
         currentState = stateFactory.CreateGroundedState();
         currentState.EnterState();
         CalcJumpVariables();
-        
     }
+
     private void CalcJumpVariables()
     {
         float timeToApex = 0.5f * maxJumpTime;
@@ -216,6 +232,8 @@ public class PlayerStateManager : MonoBehaviour
         inputSystem.Player.Jump.canceled += OnJump;
         inputSystem.Player.Dance.started += OnDance;
         inputSystem.Player.Dance.canceled += OnDance;
+        inputSystem.Player.Attack.started += OnAttack;
+        inputSystem.Player.Attack.canceled += OnAttack;
     }
 
     private void OnDisable()
@@ -256,13 +274,20 @@ public class PlayerStateManager : MonoBehaviour
         needNewJumpInput = false;
     }
 
+    private void OnAttack(InputAction.CallbackContext context)
+    {
+        isAttacking = context.ReadValueAsButton();
+    }
+
     #endregion
 
     private void Update()
     {
-        HandleRotation();
+        if (!IsMovementStopped)
+            HandleRotation();
         currentState.UpdateStates();
-        characterController.Move((Time.deltaTime * movementSpeed * appliedMovement));
+        if (!isMovementStopped)
+            characterController.Move((Time.deltaTime * movementSpeed * appliedMovement));
     }
 
     private void HandleRotation()
@@ -312,9 +337,13 @@ public class PlayerStateManager : MonoBehaviour
             Debug.Log(message);
     }
 
-    public void OnAnimationStop()
+    public void OnAttackDone()
     {
-        
+        isAttacking = false;
     }
-  
+
+    public void OnDealDamage()
+    {
+        isHitboxActive = true;
+    }
 }

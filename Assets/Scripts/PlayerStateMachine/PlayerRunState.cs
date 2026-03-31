@@ -36,6 +36,10 @@ public class PlayerRunState: PlayerBaseState
         {
             stateManager.SwitchState(stateFactory.CreateWalkState());
         } 
+        if (stateManager.IsAttacking)
+        {
+            stateManager.SwitchState(stateFactory.CreateAttackState());
+        }
     }
 }
 

@@ -34,6 +34,10 @@ public class PlayerDanceState: PlayerBaseState
             stateManager.Animator.SetBool(stateManager.DanceAnimationHash, false);
             stateManager.SwitchState(stateFactory.CreateIdleState());
         }
+        if (stateManager.IsAttacking)
+        {
+            stateManager.SwitchState(stateFactory.CreateAttackState());
+        }
        
     }
 }

@@ -37,4 +37,9 @@ public class PlayerStateFactory
     {
         return new PlayerJumpState(stateManager, this);
     }
+
+    public PlayerBaseState CreateAttackState()
+    {
+        return new PlayerAttackState(stateManager, this);
+    }
 }
