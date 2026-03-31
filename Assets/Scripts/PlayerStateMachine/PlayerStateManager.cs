@@ -42,7 +42,8 @@ public class PlayerStateManager : MonoBehaviour
     private bool isAttacking;
     private bool isHitboxActive;
     bool isMovementStopped;
-    
+    //Interact
+    private bool isInteracting;
 
     //Hurt/Damage
     [SerializeField]private bool isHurt;
@@ -65,6 +66,12 @@ public class PlayerStateManager : MonoBehaviour
     private readonly float jumpMult = 4;
 
     #region Getters/Setters
+
+    public bool IsInteracting
+    {
+        get => isInteracting;
+        set => isInteracting = value;
+    }
 
     public bool IsHurt
     {
@@ -264,6 +271,8 @@ public class PlayerStateManager : MonoBehaviour
         inputSystem.Player.Dance.canceled += OnDance;
         inputSystem.Player.Attack.started += OnAttack;
         inputSystem.Player.Attack.canceled += OnAttack;
+        inputSystem.Player.Interact.started += OnInteract;
+        inputSystem.Player.Interact.canceled += OnInteract;
         GameEvents.OnPlayerHurt += OnHurt;
     }
 
@@ -280,6 +289,8 @@ public class PlayerStateManager : MonoBehaviour
         inputSystem.Player.Jump.canceled -= OnJump;
         inputSystem.Player.Dance.started -= OnDance;
         inputSystem.Player.Dance.canceled -= OnDance;
+        inputSystem.Player.Interact.started -= OnInteract;
+        inputSystem.Player.Interact.canceled -= OnInteract;
         GameEvents.OnPlayerHurt -= OnHurt;
     }
 
@@ -309,6 +320,12 @@ public class PlayerStateManager : MonoBehaviour
     private void OnAttack(InputAction.CallbackContext context)
     {
         isAttacking = context.ReadValueAsButton();
+    }
+
+    private void OnInteract(InputAction.CallbackContext context)
+    {
+        isInteracting = context.ReadValueAsButton();
+        GameEvents.OnTryToInteract.Invoke();
     }
 
     public void OnAttackDone()

@@ -21,6 +21,7 @@
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/GameEvents.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/PlayerStateMachine/PlayerAttackState.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/PlayerStateMachine/PlayerJumpState.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.inputsystem@be6c4fd0abf5/InputSystem/Utilities/DelegateHelpers.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
@@ -133,7 +134,8 @@
       <workItem from="1774879705575" duration="7309000" />
       <workItem from="1774891032367" duration="6927000" />
       <workItem from="1774963725595" duration="2999000" />
-      <workItem from="1774970712411" duration="6913000" />
+      <workItem from="1774970712411" duration="7441000" />
+      <workItem from="1774990060034" duration="10686000" />
     </task>
     <servers />
   </component>

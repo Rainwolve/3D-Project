@@ -20,6 +20,11 @@ public class AttackManager : MonoBehaviour
         {
             hurtables.Add(hurtable);
         }
+
+        if (other.CompareTag("NPC"))
+        {
+            Debug.Log("Hit NPC");
+        }
     }
 
     private void OnTriggerExit(Collider other)
