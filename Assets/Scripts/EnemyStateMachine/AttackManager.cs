@@ -6,8 +6,14 @@ public class AttackManager : MonoBehaviour
     private List<IHurtable> hurtables = new List<IHurtable>();
 
     public List<IHurtable> Hurtables { get { return hurtables; } }
+    private SphereCollider sphereCollider;
+    public SphereCollider SphereCollider { get { return sphereCollider; }set { sphereCollider = value; } }
 
-    
+    private void Awake()
+    {
+        sphereCollider = GetComponent<SphereCollider>();
+        sphereCollider.enabled = false;
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.TryGetComponent<IHurtable>(out var hurtable))
@@ -23,4 +29,6 @@ public class AttackManager : MonoBehaviour
             hurtables.Remove(hurtable);
         }
     }
+
+  
 }

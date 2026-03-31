@@ -38,9 +38,15 @@ public class PlayerStateManager : MonoBehaviour
     private bool isDancePressed;
 
     //Attack
+    [SerializeField] private int hp;
     private bool isAttacking;
     private bool isHitboxActive;
-    private bool isMovementStopped;
+    bool isMovementStopped;
+    
+
+    //Hurt/Damage
+    [SerializeField]private bool isHurt;
+    private bool canTakeDamage;
 
 
     private float rotationFactorPerFrame = 15;
@@ -60,6 +66,24 @@ public class PlayerStateManager : MonoBehaviour
 
     #region Getters/Setters
 
+    public bool IsHurt
+    {
+        get => isHurt;
+        set => isHurt = value;
+    }
+
+    public int Hp
+    {
+        get => hp;
+        set => hp = value;
+    }
+
+    public bool CanTakeDamage
+    {
+        get => canTakeDamage;
+        set => canTakeDamage = value;
+    }
+
     public bool IsHitboxActive
     {
         get => isHitboxActive;
@@ -78,6 +102,12 @@ public class PlayerStateManager : MonoBehaviour
     {
         get => isJumping;
         set => isJumping = value;
+    }
+
+    public AttackManager AttackManager
+    {
+        get => attackManager;
+        set => attackManager = value;
     }
 
     public bool NeedNewJumpInput
@@ -234,6 +264,7 @@ public class PlayerStateManager : MonoBehaviour
         inputSystem.Player.Dance.canceled += OnDance;
         inputSystem.Player.Attack.started += OnAttack;
         inputSystem.Player.Attack.canceled += OnAttack;
+        GameEvents.OnPlayerHurt += OnHurt;
     }
 
     private void OnDisable()
@@ -249,6 +280,7 @@ public class PlayerStateManager : MonoBehaviour
         inputSystem.Player.Jump.canceled -= OnJump;
         inputSystem.Player.Dance.started -= OnDance;
         inputSystem.Player.Dance.canceled -= OnDance;
+        GameEvents.OnPlayerHurt -= OnHurt;
     }
 
 
@@ -279,15 +311,31 @@ public class PlayerStateManager : MonoBehaviour
         isAttacking = context.ReadValueAsButton();
     }
 
+    public void OnAttackDone()
+    {
+        isAttacking = false;
+        attackManager.SphereCollider.enabled = false;
+    }
+
+    public void OnDealDamage()
+    {
+        attackManager.SphereCollider.enabled = true;
+    }
+
+    private void OnHurt(int dmg)
+    {
+        if (canTakeDamage) isHurt = true;
+    }
+
     #endregion
+
+    #region Other Methods
 
     private void Update()
     {
-        if (!IsMovementStopped)
-            HandleRotation();
+        if (!IsMovementStopped) HandleRotation();
         currentState.UpdateStates();
-        if (!isMovementStopped)
-            characterController.Move((Time.deltaTime * movementSpeed * appliedMovement));
+        if (!isMovementStopped) characterController.Move((Time.deltaTime * movementSpeed * appliedMovement));
     }
 
     private void HandleRotation()
@@ -337,13 +385,5 @@ public class PlayerStateManager : MonoBehaviour
             Debug.Log(message);
     }
 
-    public void OnAttackDone()
-    {
-        isAttacking = false;
-    }
-
-    public void OnDealDamage()
-    {
-        isHitboxActive = true;
-    }
+    #endregion
 }

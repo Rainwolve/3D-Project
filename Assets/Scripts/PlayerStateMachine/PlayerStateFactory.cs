@@ -42,4 +42,9 @@ public class PlayerStateFactory
     {
         return new PlayerAttackState(stateManager, this);
     }
+
+    public PlayerBaseState CreateHurtState()
+    {
+        return new PlayerHurtState(stateManager, this);
+    }
 }
