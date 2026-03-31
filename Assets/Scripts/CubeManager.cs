@@ -14,6 +14,7 @@ public class CubeManager : MonoBehaviour
     {
         if (other.tag == "Player")
         {
+            Debug.Log("Player collided");
             GameEvents.OnPlayerHurt.Invoke(1);
         }
     }

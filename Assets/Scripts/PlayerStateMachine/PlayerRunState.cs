@@ -28,6 +28,11 @@ public class PlayerRunState: PlayerBaseState
     
     private void CheckSwitchState()
     {
+        
+        if (stateManager.IsHurt)
+        {
+            stateManager.SwitchState(stateFactory.CreateHurtState());
+        }
         if (!stateManager.IsMovementPressed)
         {
             stateManager.SwitchState(stateFactory.CreateIdleState());

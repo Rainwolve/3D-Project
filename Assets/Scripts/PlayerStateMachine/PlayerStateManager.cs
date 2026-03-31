@@ -46,7 +46,7 @@ public class PlayerStateManager : MonoBehaviour
 
     //Hurt/Damage
     [SerializeField]private bool isHurt;
-    private bool canTakeDamage;
+    private bool canTakeDamage = true;
 
 
     private float rotationFactorPerFrame = 15;

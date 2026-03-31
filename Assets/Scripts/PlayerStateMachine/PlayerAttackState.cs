@@ -28,6 +28,11 @@ public class PlayerAttackState : PlayerBaseState
 
     private void CheckSwitchState()
     {
+        if (stateManager.IsHurt)
+        {
+            stateManager.IsMovementStopped = false;
+            stateManager.SwitchState(stateFactory.CreateHurtState());
+        }
         if (!stateManager.IsAttacking)
         {
             stateManager.IsMovementStopped = false;
