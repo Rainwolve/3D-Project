@@ -158,7 +158,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c46b2d876e065a24395517fcd7f89b8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerStateManager: {fileID: 2086057347}
+  playerStateManager: {fileID: 0}
   panel: {fileID: 971225634}
   panel1: {fileID: 529221687}
   Message: []
@@ -2502,7 +2502,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2086057343}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
+  m_Avatar: {fileID: 9000000, guid: b9a9c664141794144898480d535f48d4, type: 3}
   m_Controller: {fileID: 9100000, guid: 0746ceee3d4227441a4757cbe60bed58, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
