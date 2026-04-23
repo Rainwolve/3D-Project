@@ -17,15 +17,15 @@ public class DummyManager : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (CompareTag("Player"))
+        if (other.CompareTag("Player"))
         {
-            if (MaxHP > 0)
+            if (CurrentHP <= 1f)
             {
-                LoseHP();
+                FuckingDie();   
             }
             else
             {
-                FuckingDie();
+                LoseHP();
             }
         }
     }
@@ -38,6 +38,7 @@ public class DummyManager : MonoBehaviour
 
     private void LoseHP()
     {
+        
         animator.SetTrigger("IsHit");
         CurrentHP--;
     }
